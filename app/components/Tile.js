@@ -37,7 +37,11 @@ class Tile extends React.Component {
   }
   render() {
     return (
-      <div onClick={this.handleClick} onContextMenu={this.handleClick}>
+      <div className={this.props.hasMine ? 'mine' : ''} onClick={this.handleClick} onContextMenu={this.handleClick} style={{
+        padding: '.5rem',
+        border: '1px solid black',
+        width: '50px'
+      }}>
         {this.getDisplay()}
       </div>
     );
