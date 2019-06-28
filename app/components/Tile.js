@@ -30,17 +30,20 @@ class Tile extends React.Component {
   }
   getFlagDisplay() {
     return [
-      'blank',
-      'flagged',
-      'question'
+      '',
+      <i className="fa fa-flag"></i>,
+      <i className="fa fa-question"></i>
     ][this.state.flagIndex];
   }
   render() {
     return (
       <div className={this.props.hasMine ? 'mine' : ''} onClick={this.handleClick} onContextMenu={this.handleClick} style={{
-        padding: '.5rem',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         border: '1px solid black',
-        width: '50px'
+        width: '50px',
+        height: '50px'
       }}>
         {this.getDisplay()}
       </div>
