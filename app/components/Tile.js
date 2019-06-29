@@ -1,7 +1,5 @@
 import React from "react";
 
-document.oncontextmenu = () => false;
-
 class Tile extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +23,10 @@ class Tile extends React.Component {
   }
   getDisplay() {
     if (this.props.clicked) {
-      return 'has been clicked!';
+      if (this.props.hasMine) {
+        return <i className="fa fa-bomb"></i>
+      }
+      return this.props.number || '';
     }
     return this.getFlagDisplay();
   }
@@ -38,7 +39,7 @@ class Tile extends React.Component {
   }
   render() {
     return (
-      <div className={this.props.hasMine ? 'mine' : ''} onClick={this.handleClick} onContextMenu={this.handleClick} style={{
+      <div className={this.props.hasMine ? 'mine' : ''} onClick={this.props.handleClick} onContextMenu={this.handleClick} style={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -47,7 +48,6 @@ class Tile extends React.Component {
         height: '50px'
       }}>
         {this.getDisplay()}
-        {this.props.number || ''}
       </div>
     );
   }

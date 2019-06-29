@@ -1,12 +1,15 @@
 import React from 'react';
 import Tile from './Tile';
 
+document.oncontextmenu = () => false;
+
 class Minesweeper extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       game: null
     };
+    this.handleTileClick = this.handleTileClick.bind(this);
   }
   startGame(rows = 10, cols = 10, mineCount = 10) {
     const getTiles = () => {
@@ -60,13 +63,24 @@ class Minesweeper extends React.Component {
       tiles: getTiles()
     });
   }
+  handleTileClick([rowIndex, colIndex]) {
+    const selectedTile = this.state.tiles[rowIndex][colIndex];
+    if (!selectedTile.clicked) {
+      const updatedTiles = this.state.tiles;
+      updatedTiles[rowIndex][colIndex] = {
+        ...selectedTile,
+        clicked: true
+      };
+      this.setState({ tiles: updatedTiles });
+    }
+  }
   render() {
     return this.state.game ?
       <div>
         <h1>this is minesweeper</h1>
         {this.state.tiles.map((row, rowIndex) => (
           <div key={rowIndex} style={{ display: 'flex' }}>
-            {row.map((tileProps, colIndex) => <Tile key={`${rowIndex}${colIndex}`} {...tileProps} />)}
+            {row.map((tileProps, colIndex) => <Tile key={tileProps.index.join('')} {...tileProps} handleClick={() => this.handleTileClick(tileProps.index)} />)}
           </div>
         ))}
       </div>
