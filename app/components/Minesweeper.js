@@ -24,7 +24,36 @@ class Minesweeper extends React.Component {
           minesToPlace -= 1;
         }
       }
-      return grid.map(row => row.map(bool => <Tile hasMine={bool} />));
+      const gridMinesPlaced = grid.map((row, rowIndex) => row.map((bool, colIndex) => {
+        return {
+          hasMine: bool,
+          clicked: false,
+          index: [rowIndex, colIndex]
+        };
+      }));
+      const getTileNumber = (grid, [rowIndex, colIndex]) => {
+        if (grid[rowIndex][colIndex].hasMine) {
+          return null;
+        }
+        let totalProximityMines = 0;
+        for (let i = rowIndex - 1; i <= rowIndex + 1; i += 1) {
+          for (let j = colIndex - 1; j <= colIndex + 1; j += 1) {
+            if (i >= 0 && i < rows && j >= 0 && j < cols) {
+              if (grid[i][j].hasMine) {
+                totalProximityMines += 1;
+              }
+            }
+          }
+        }
+        return totalProximityMines;
+      }
+      const gridNumbersPlaced = gridMinesPlaced.map(row => row.map(tileObject => {
+        return {
+          ...tileObject,
+          number: getTileNumber(gridMinesPlaced, tileObject.index)
+        };
+      }));
+      return gridNumbersPlaced;
     }
     this.setState({
       game: 'playing',
@@ -35,9 +64,9 @@ class Minesweeper extends React.Component {
     return this.state.game ?
       <div>
         <h1>this is minesweeper</h1>
-        {this.state.tiles.map(row => (
-          <div style={{ display: 'flex' }}>
-            {row}
+        {this.state.tiles.map((row, rowIndex) => (
+          <div key={rowIndex} style={{ display: 'flex' }}>
+            {row.map((tileProps, colIndex) => <Tile key={`${rowIndex}${colIndex}`} {...tileProps} />)}
           </div>
         ))}
       </div>
