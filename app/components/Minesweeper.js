@@ -1,5 +1,6 @@
 import React from 'react';
 import Tile from './Tile';
+import SmileStatus from './SmileStatus';
 
 document.oncontextmenu = () => false;
 
@@ -17,6 +18,21 @@ class Minesweeper extends React.Component {
   componentDidMount() {
     this.setupGame();
   }
+  componentDidUpdate() {
+    if (!this.state.game.winState) {
+      const winning = this.state.tiles.every((row) => {
+        return row.every(tile => tile.hasMine || tile.clicked);
+      });
+      if (winning) {
+        this.setState({
+          game: {
+            ...this.state.game,
+            winState: 'win'
+          }
+        }, () => this.stopTimer());
+      }
+    }
+  }
   setupGame(rows = 10, cols = 10, mineCount = 10) {
     const getTiles = () => {
       const grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
@@ -27,9 +43,11 @@ class Minesweeper extends React.Component {
     this.setState({
       game: {
         status: 'ready',
+        winState: null,
         rows: rows,
         cols: cols,
-        mineCount: mineCount
+        mineCount: mineCount,
+        clicks: 0
       },
       tiles: getTiles()
     });
@@ -87,29 +105,57 @@ class Minesweeper extends React.Component {
     this.setState({
       game: {
         ...this.state.game,
-        status: 'playing'
+        status: 'playing',
+        timer: 0
       },
       tiles: getTiles()
-    }, () => this.handleTileClick(firstClickIndex));
+    }, () => {
+      this.startTimer();
+      this.handleTileClick(firstClickIndex)
+    });
+  }
+  startTimer() {
+    const timerID = setInterval(() => {
+      this.setState({
+        game: {
+          ...this.state.game,
+          timer: this.state.game.timer + 1,
+          timerID: timerID
+        }
+      });
+    }, 1000);
+  }
+  stopTimer() {
+    clearInterval(this.state.game.timerID);
   }
   handleTileClick([rowIndex, colIndex], recursiveCallFinal = false) {
+    const { game } = this.state;
     const selectedTile = this.state.tiles[rowIndex][colIndex];
     if (!selectedTile.clicked) {
-      if (selectedTile.hasMine) {
-        console.log('YOU HAVE LOST.');
-      }
       const updatedTiles = this.state.tiles;
       updatedTiles[rowIndex][colIndex] = {
         ...selectedTile,
         clicked: true
       };
-      this.setState({ tiles: updatedTiles });
+      this.setState({
+        game: {
+          ...this.state.game,
+          winState: selectedTile.hasMine ? 'lose' : this.state.game.winState,
+          clicks: this.state.game.clicks + 1
+        },
+        tiles: updatedTiles
+      }, () => {
+        if (selectedTile.hasMine) {
+          console.log('stop this madness!');
+          this.stopTimer();
+        }
+      });
       if (selectedTile.number === 0) {
-        const neighbors = { // TODO avoid magic constants
-          up: (rowIndex - 1 >= 0 && rowIndex - 1 < 10 && colIndex >= 0 && colIndex < 10) && updatedTiles[rowIndex - 1][colIndex],
-          right: (rowIndex  >= 0 && rowIndex < 10 && (colIndex + 1) >= 0 && (colIndex + 1) < 10) && updatedTiles[rowIndex][colIndex + 1],
-          down: (rowIndex + 1 >= 0 && rowIndex + 1 < 10 && colIndex >= 0 && colIndex < 10) && updatedTiles[rowIndex + 1][colIndex],
-          left: (rowIndex  >= 0 && rowIndex < 10 && (colIndex - 1) >= 0 && (colIndex - 1) < 10) && updatedTiles[rowIndex][colIndex - 1]
+        const neighbors = {
+          up: (rowIndex - 1 >= 0 && rowIndex - 1 < game.rows && colIndex >= 0 && colIndex < game.cols) && updatedTiles[rowIndex - 1][colIndex],
+          right: (rowIndex  >= 0 && rowIndex < game.rows && (colIndex + 1) >= 0 && (colIndex + 1) < game.cols) && updatedTiles[rowIndex][colIndex + 1],
+          down: (rowIndex + 1 >= 0 && rowIndex + 1 < game.rows && colIndex >= 0 && colIndex < game.cols) && updatedTiles[rowIndex + 1][colIndex],
+          left: (rowIndex  >= 0 && rowIndex < game.rows && (colIndex - 1) >= 0 && (colIndex - 1) < game.cols) && updatedTiles[rowIndex][colIndex - 1]
         };
         Object.values(neighbors).map((tile) => {
           if (tile) {
@@ -120,25 +166,37 @@ class Minesweeper extends React.Component {
     }
   }
   render() {
-    return this.state.game.status === 'playing' ?
+    return (
       <div>
-        <h1>this is minesweeper</h1>
-        {this.state.tiles.map((row, rowIndex) => (
-          <div key={rowIndex} style={{ display: 'flex' }}>
-            {row.map((tileProps, colIndex) => <Tile key={tileProps.index.join('')} {...tileProps} handleClick={() => this.handleTileClick(tileProps.index)} />)}
+        <div className="status-bar">
+          <div>{this.state.game.mineCount || 0}</div>
+          <div>
+            <SmileStatus status={this.state.game.winState || this.state.game.status} onClick={() => this.setupGame()} />
           </div>
-        ))}
+          <div>{this.state.game.timer || 0}</div>
+        </div>
+        <div>
+          {
+            this.state.game.status === 'playing' ?
+            <div>
+              {this.state.tiles.map((row, rowIndex) => (
+                <div key={rowIndex} style={{ display: 'flex' }}>
+                  {row.map((tileProps, colIndex) => <Tile key={tileProps.index.join('')} {...tileProps} handleClick={() => this.handleTileClick(tileProps.index)} />)}
+                </div>
+              ))}
+            </div>
+            :
+            <div>
+              {this.state.tiles.map((row, rowIndex) => (
+                <div key={rowIndex} style={{ display: 'flex' }}>
+                  {row.map((tileProps, colIndex) => <Tile key={tileProps.index.join('')} handleClick={() => this.startGame(tileProps.index)} />)}
+                </div>
+              ))}
+            </div>  
+          }
+        </div>
       </div>
-      :
-      <div>
-        <h1>please begin minesweeper</h1>
-        {this.state.tiles.map((row, rowIndex) => (
-          <div key={rowIndex} style={{ display: 'flex' }}>
-            {row.map((tileProps, colIndex) => <Tile key={tileProps.index.join('')} handleClick={() => this.startGame(tileProps.index)} />)}
-          </div>
-        ))}
-      </div>  
-    ;
+    );
   }
 }
 
