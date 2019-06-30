@@ -63,15 +63,31 @@ class Minesweeper extends React.Component {
       tiles: getTiles()
     });
   }
-  handleTileClick([rowIndex, colIndex]) {
+  handleTileClick([rowIndex, colIndex], recursiveCallFinal = false) {
     const selectedTile = this.state.tiles[rowIndex][colIndex];
     if (!selectedTile.clicked) {
+      if (selectedTile.hasMine) {
+        console.log('YOU HAVE LOST.');
+      }
       const updatedTiles = this.state.tiles;
       updatedTiles[rowIndex][colIndex] = {
         ...selectedTile,
         clicked: true
       };
       this.setState({ tiles: updatedTiles });
+      if (selectedTile.number === 0) {
+        const neighbors = { // TODO avoid magic constants
+          up: (rowIndex - 1 >= 0 && rowIndex - 1 < 10 && colIndex >= 0 && colIndex < 10) && updatedTiles[rowIndex - 1][colIndex],
+          right: (rowIndex  >= 0 && rowIndex < 10 && (colIndex + 1) >= 0 && (colIndex + 1) < 10) && updatedTiles[rowIndex][colIndex + 1],
+          down: (rowIndex + 1 >= 0 && rowIndex + 1 < 10 && colIndex >= 0 && colIndex < 10) && updatedTiles[rowIndex + 1][colIndex],
+          left: (rowIndex  >= 0 && rowIndex < 10 && (colIndex - 1) >= 0 && (colIndex - 1) < 10) && updatedTiles[rowIndex][colIndex - 1]
+        };
+        Object.values(neighbors).map((tile) => {
+          if (tile) {
+            this.handleTileClick(tile.index);
+          }
+        });
+      }
     }
   }
   render() {

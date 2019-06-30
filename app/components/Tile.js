@@ -12,7 +12,7 @@ class Tile extends React.Component {
   }
   handleClick(e) {
     if (e.type === 'click' && this.state.flagIndex === 0) {
-      if (this.props.hasMine) alert('bomba!');
+      if (!this.props.clicked) this.props.handleClick();
     };
     if (e.type === 'contextmenu') this.advanceFlagIndex();
   }
@@ -37,9 +37,15 @@ class Tile extends React.Component {
       <i className="fa fa-question"></i>
     ][this.state.flagIndex];
   }
+  renderClass() {
+    if (!this.props.clicked){
+      return 'tile unclicked';
+    }
+    return `tile number-${this.props.number}`;
+  }
   render() {
     return (
-      <div className={this.props.hasMine ? 'mine' : ''} onClick={this.props.handleClick} onContextMenu={this.handleClick} style={{
+      <div className={this.renderClass()} onClick={this.handleClick} onContextMenu={this.handleClick} style={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
