@@ -7,11 +7,36 @@ class Minesweeper extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      game: null
+      game: {
+        status: 'unmounted'
+      },
+      tiles: []
     };
     this.handleTileClick = this.handleTileClick.bind(this);
   }
-  startGame(rows = 10, cols = 10, mineCount = 10) {
+  componentDidMount() {
+    this.setupGame();
+  }
+  setupGame(rows = 10, cols = 10, mineCount = 10) {
+    const getTiles = () => {
+      const grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
+      return grid.map((row, rowIndex) => row.map((col, colIndex) => ({
+        index: [rowIndex, colIndex]
+      })));
+    }
+    this.setState({
+      game: {
+        status: 'ready',
+        rows: rows,
+        cols: cols,
+        mineCount: mineCount
+      },
+      tiles: getTiles()
+    });
+  }
+  startGame(firstClickIndex) {
+    const { rows, cols, mineCount } = this.state.game;
+    console.log('starting game', rows, cols, mineCount);
     const getTiles = () => {
       const getRandomInt = (min, max) => {
         min = Math.ceil(min);
@@ -22,7 +47,8 @@ class Minesweeper extends React.Component {
       const grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
       while (minesToPlace) {
         const coords = [getRandomInt(0, rows), getRandomInt(0, cols)];
-        if (!grid[coords[0]][coords[1]]) {
+        const coordsMatchFirstClickedTile = firstClickIndex[0] === coords[0] && firstClickIndex[1] === coords[1];
+        if (!coordsMatchFirstClickedTile && !grid[coords[0]][coords[1]]) {
           grid[coords[0]][coords[1]] = true;
           minesToPlace -= 1;
         }
@@ -59,9 +85,12 @@ class Minesweeper extends React.Component {
       return gridNumbersPlaced;
     }
     this.setState({
-      game: 'playing',
+      game: {
+        ...this.state.game,
+        status: 'playing'
+      },
       tiles: getTiles()
-    });
+    }, () => this.handleTileClick(firstClickIndex));
   }
   handleTileClick([rowIndex, colIndex], recursiveCallFinal = false) {
     const selectedTile = this.state.tiles[rowIndex][colIndex];
@@ -91,7 +120,7 @@ class Minesweeper extends React.Component {
     }
   }
   render() {
-    return this.state.game ?
+    return this.state.game.status === 'playing' ?
       <div>
         <h1>this is minesweeper</h1>
         {this.state.tiles.map((row, rowIndex) => (
@@ -101,8 +130,13 @@ class Minesweeper extends React.Component {
         ))}
       </div>
       :
-      <div onClick={() => this.startGame()}>
-        Start
+      <div>
+        <h1>please begin minesweeper</h1>
+        {this.state.tiles.map((row, rowIndex) => (
+          <div key={rowIndex} style={{ display: 'flex' }}>
+            {row.map((tileProps, colIndex) => <Tile key={tileProps.index.join('')} handleClick={() => this.startGame(tileProps.index)} />)}
+          </div>
+        ))}
       </div>  
     ;
   }
