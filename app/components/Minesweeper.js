@@ -4,6 +4,13 @@ import SmileStatus from './SmileStatus';
 
 document.oncontextmenu = () => false;
 
+// TODO persist difficulty on restart
+// TODO disable new clicks after game loss
+// TODO add connecting corner fills to blank square recursion
+// TODO componetize controls
+// TODO more style!
+// TODO look for logic refactors
+
 class Minesweeper extends React.Component {
   constructor(props) {
     super(props);
@@ -146,7 +153,6 @@ class Minesweeper extends React.Component {
         tiles: updatedTiles
       }, () => {
         if (selectedTile.hasMine) {
-          console.log('stop this madness!');
           this.stopTimer();
         }
       });
@@ -194,6 +200,11 @@ class Minesweeper extends React.Component {
               ))}
             </div>  
           }
+        </div>
+        <div className="status-bar">
+          <div onClick={() => this.setupGame(9, 9, 10)}>easy</div>
+          <div onClick={() => this.setupGame(16, 16, 40)}>medium</div>
+          <div onClick={() => this.setupGame(16, 30, 99)}>expert</div>
         </div>
       </div>
     );
