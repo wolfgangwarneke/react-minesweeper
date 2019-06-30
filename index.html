@@ -5,16 +5,13 @@
   <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
   <style>
-    .mine {
-      background: pink;
-    }
     .tile {
-      background: #999;
+      background: #bbb;
       font-family: "Source Code Pro", monospace;
       font-size: 22px;
     }
-    .tile.unclicked {
-      background: #bbb;
+    .tile.clicked {
+      background: #999;
     }
     .number-1 {
       color: blue;
@@ -37,6 +34,9 @@
       justify-content: space-between;
       font-size: 24px;
       padding: .5rem;
+    }
+    .tile.clicked.triggered-mine {
+      background: #c72e2e;
     }
   </style>
 </head>

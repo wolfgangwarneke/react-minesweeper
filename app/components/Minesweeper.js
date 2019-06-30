@@ -148,11 +148,26 @@ class Minesweeper extends React.Component {
     const { game } = this.state;
     const selectedTile = this.state.tiles[rowIndex][colIndex];
     if (!selectedTile.clicked && !this.state.game.winState) {
-      const updatedTiles = this.state.tiles;
+      let updatedTiles = this.state.tiles;
       updatedTiles[rowIndex][colIndex] = {
         ...selectedTile,
         clicked: true
       };
+      if (selectedTile.hasMine) {
+        updatedTiles = updatedTiles.map((row, i) => row.map((tileInfo, j) => {
+          if (tileInfo.hasMine) {
+            return (rowIndex === i && colIndex === j) ? {
+              ...tileInfo,
+              triggeredMine: true,
+              clicked: true
+            } : {
+              ...tileInfo,
+              clicked: true
+            };
+          };
+          return tileInfo;
+        }));
+      }
       this.setState({
         game: {
           ...this.state.game,
@@ -162,6 +177,14 @@ class Minesweeper extends React.Component {
         tiles: updatedTiles
       }, () => {
         if (selectedTile.hasMine) {
+          // this.setState({
+          //   tiles: this.state.tiles.map(row => row.map(tileInfo => {
+          //     tileInfo.hasMine ? {
+          //       ...tileInfo,
+          //       revealed: true
+          //     } : tileInfo
+          //   }))
+          // });
           this.stopTimer();
         }
       });

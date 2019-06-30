@@ -45,6 +45,14 @@ class Tile extends React.Component {
     ][this.state.flagIndex];
   }
   renderClass() {
+    const classes = [
+      'tile',
+      this.props.clicked && 'clicked',
+      this.props.clicked && this.props.hasMine && 'clicked-mine',
+      this.props.triggeredMine && this.props.hasMine && 'triggered-mine',
+      this.props.number && `number-${this.props.number}`
+    ];
+    return classes.filter(c => c).join(' ');
     if (!this.props.clicked){
       return 'tile unclicked';
     }
