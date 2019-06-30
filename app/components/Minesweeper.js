@@ -146,7 +146,7 @@ class Minesweeper extends React.Component {
   handleTileClick([rowIndex, colIndex], recursiveCallFinal = false) {
     const { game } = this.state;
     const selectedTile = this.state.tiles[rowIndex][colIndex];
-    if (!selectedTile.clicked) {
+    if (!selectedTile.clicked && !this.state.game.winState) {
       const updatedTiles = this.state.tiles;
       updatedTiles[rowIndex][colIndex] = {
         ...selectedTile,
