@@ -10,6 +10,13 @@ class Tile extends React.Component {
     this.advanceFlagIndex = this.advanceFlagIndex.bind(this);
     this.getDisplay = this.getDisplay.bind(this);
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reset && this.state.flagIndex > 0) {
+      this.setState({
+        flagIndex: 0
+      });
+    }
+  }
   handleClick(e) {
     if (e.type === 'click' && this.state.flagIndex === 0) {
       if (!this.props.clicked) this.props.handleClick();

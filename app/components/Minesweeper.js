@@ -4,8 +4,9 @@ import SmileStatus from './SmileStatus';
 
 document.oncontextmenu = () => false;
 
-// TODO disable new clicks after game loss
-// TODO add connecting corner fills to blank square recursion
+// TODO show all mines on lose state
+// TODO red highlight clicked mine on lose state
+// TODO fix timer bug (sometimes continues after game loss)
 // TODO componetize controls
 // TODO more style!
 // TODO look for logic refactors
@@ -165,17 +166,24 @@ class Minesweeper extends React.Component {
         }
       });
       if (selectedTile.number === 0) {
-        const neighbors = {
-          up: (rowIndex - 1 >= 0 && rowIndex - 1 < game.rows && colIndex >= 0 && colIndex < game.cols) && updatedTiles[rowIndex - 1][colIndex],
-          right: (rowIndex  >= 0 && rowIndex < game.rows && (colIndex + 1) >= 0 && (colIndex + 1) < game.cols) && updatedTiles[rowIndex][colIndex + 1],
-          down: (rowIndex + 1 >= 0 && rowIndex + 1 < game.rows && colIndex >= 0 && colIndex < game.cols) && updatedTiles[rowIndex + 1][colIndex],
-          left: (rowIndex  >= 0 && rowIndex < game.rows && (colIndex - 1) >= 0 && (colIndex - 1) < game.cols) && updatedTiles[rowIndex][colIndex - 1]
-        };
-        Object.values(neighbors).map((tile) => {
-          if (tile) {
-            this.handleTileClick(tile.index);
+        // const neighbors = {
+        //   up: (rowIndex - 1 >= 0 && rowIndex - 1 < game.rows && colIndex >= 0 && colIndex < game.cols) && updatedTiles[rowIndex - 1][colIndex],
+        //   right: (rowIndex  >= 0 && rowIndex < game.rows && (colIndex + 1) >= 0 && (colIndex + 1) < game.cols) && updatedTiles[rowIndex][colIndex + 1],
+        //   down: (rowIndex + 1 >= 0 && rowIndex + 1 < game.rows && colIndex >= 0 && colIndex < game.cols) && updatedTiles[rowIndex + 1][colIndex],
+        //   left: (rowIndex  >= 0 && rowIndex < game.rows && (colIndex - 1) >= 0 && (colIndex - 1) < game.cols) && updatedTiles[rowIndex][colIndex - 1]
+        // };
+        // Object.values(neighbors).map((tile) => {
+        //   if (tile) {
+        //     this.handleTileClick(tile.index);
+        //   }
+        // });
+        for (let i = rowIndex - 1; i <= rowIndex + 1; i += 1) {
+          for (let j = colIndex - 1; j <= colIndex + 1; j += 1) {
+            if (i >= 0 && i < game.rows && j >= 0 && j < game.cols) {
+              this.handleTileClick([i, j]);
+            }
           }
-        });
+        }
       }
     }
   }
@@ -203,7 +211,7 @@ class Minesweeper extends React.Component {
             <div>
               {this.state.tiles.map((row, rowIndex) => (
                 <div key={rowIndex} style={{ display: 'flex' }}>
-                  {row.map((tileProps, colIndex) => <Tile key={tileProps.index.join('')} handleClick={() => this.startGame(tileProps.index)} />)}
+                  {row.map((tileProps, colIndex) => <Tile key={tileProps.index.join('')} handleClick={() => this.startGame(tileProps.index)} reset />)}
                 </div>
               ))}
             </div>  
