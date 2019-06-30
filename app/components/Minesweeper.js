@@ -4,7 +4,6 @@ import SmileStatus from './SmileStatus';
 
 document.oncontextmenu = () => false;
 
-// TODO persist difficulty on restart
 // TODO disable new clicks after game loss
 // TODO add connecting corner fills to blank square recursion
 // TODO componetize controls
@@ -40,7 +39,15 @@ class Minesweeper extends React.Component {
       }
     }
   }
-  setupGame(rows = 10, cols = 10, mineCount = 10) {
+  getDifficultySettings(difficulty) {
+    return {
+      easy: [9, 9, 10],
+      medium: [16, 16, 40],
+      expert: [16, 30, 99]
+    }[difficulty || this.state.difficulty || 'easy'];
+  }
+  setupGame(difficulty) {
+    const [rows, cols, mineCount] = this.getDifficultySettings(difficulty);
     const getTiles = () => {
       const grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
       return grid.map((row, rowIndex) => row.map((col, colIndex) => ({
@@ -54,7 +61,8 @@ class Minesweeper extends React.Component {
         rows: rows,
         cols: cols,
         mineCount: mineCount,
-        clicks: 0
+        clicks: 0,
+        difficulty: difficulty
       },
       tiles: getTiles()
     });
@@ -202,9 +210,15 @@ class Minesweeper extends React.Component {
           }
         </div>
         <div className="status-bar">
-          <div onClick={() => this.setupGame(9, 9, 10)}>easy</div>
-          <div onClick={() => this.setupGame(16, 16, 40)}>medium</div>
-          <div onClick={() => this.setupGame(16, 30, 99)}>expert</div>
+          <div onClick={() => this.setState({
+            difficulty: 'easy'
+          }, () => this.setupGame())}>easy</div>
+          <div onClick={() => this.setState({
+            difficulty: 'medium'
+          }, () => this.setupGame())}>medium</div>
+          <div onClick={() => this.setState({
+            difficulty: 'expert'
+          }, () => this.setupGame())}>expert</div>
         </div>
       </div>
     );
