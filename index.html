@@ -12,6 +12,25 @@
     }
     .tile.clicked {
       background: #999;
+      border-left: none !important;
+      border-top: none !important;
+      border-right: 1px solid #4c4c4c !important;
+      border-bottom: 1px solid #4c4c4c !important;
+    }
+    .tile-grid-container > div:first-child .tile.clicked {
+      border-top: none !important;
+    }
+    .tile-grid-container > div:last-child .tile.clicked {
+      border-bottom: none !important;
+    }
+    .tile-grid-container > div .tile.clicked:first-child {
+      border-left: none !important;
+    }
+    .tile-grid-container > div .tile.clicked:last-child {
+      border-right: none !important;
+    }
+    [class*="number"] {
+      font-size: 26px;
     }
     .number-1 {
       color: blue;
@@ -25,8 +44,11 @@
     .number-4 {
       color: purple;
     }
+    .number-5 {
+      color: #23959c;
+    }
     .fa-flag {
-      color: darkred;
+      color: #563939;
     }
     .status-bar {
       width: 500px;
@@ -39,8 +61,18 @@
       background: #c72e2e;
     }
     .fa-smile-o:before, .fa-frown-o:before {
-      background: radial-gradient(yellow 0%, yellow 65%, transparent 65%, transparent);
+      background: radial-gradient(yellow 0%, yellow 60%, transparent 60%, transparent);
       border-radius: 50%;
+    }
+    .tile-grid-container {
+      display: inline-block;
+      border: 3px inset;
+      border-color: rgb(183, 183, 183) rgb(230, 230, 230) rgb(222, 222, 222) rgb(199, 199, 199);
+      box-shadow: 0 0 2px #999;
+    }
+    .Minesweeper {
+      background: #cacaca;
+      padding-left: 2rem;
     }
   </style>
 </head>

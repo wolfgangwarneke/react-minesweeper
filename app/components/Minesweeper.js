@@ -212,7 +212,7 @@ class Minesweeper extends React.Component {
   }
   render() {
     return (
-      <div>
+      <div className="Minesweeper">
         <div className="status-bar">
           <div>{this.state.game.mineCount || 0}</div>
           <div>
@@ -223,7 +223,7 @@ class Minesweeper extends React.Component {
         <div>
           {
             this.state.game.status === 'playing' ?
-            <div>
+            <div className="tile-grid-container">
               {this.state.tiles.map((row, rowIndex) => (
                 <div key={rowIndex} style={{ display: 'flex' }}>
                   {row.map((tileProps, colIndex) => <Tile key={tileProps.index.join('')} {...tileProps} handleClick={() => this.handleTileClick(tileProps.index)} />)}
@@ -231,7 +231,7 @@ class Minesweeper extends React.Component {
               ))}
             </div>
             :
-            <div>
+            <div className="tile-grid-container">
               {this.state.tiles.map((row, rowIndex) => (
                 <div key={rowIndex} style={{ display: 'flex' }}>
                   {row.map((tileProps, colIndex) => <Tile key={tileProps.index.join('')} handleClick={() => this.startGame(tileProps.index)} reset />)}

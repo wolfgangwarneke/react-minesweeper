@@ -50,7 +50,7 @@ class Tile extends React.Component {
       this.props.clicked && 'clicked',
       this.props.clicked && this.props.hasMine && 'clicked-mine',
       this.props.triggeredMine && this.props.hasMine && 'triggered-mine',
-      this.props.number && `number-${this.props.number}`
+      this.props.clicked && this.props.number && `number-${this.props.number}`
     ];
     return classes.filter(c => c).join(' ');
     if (!this.props.clicked){
@@ -64,7 +64,9 @@ class Tile extends React.Component {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        border: '1px solid black',
+        boxSizing: 'border-box',
+        border: '3px inset',
+        borderColor: 'rgb(255, 255, 255) rgb(82, 82, 82) rgb(93, 93, 93) rgb(230, 230, 230)',
         width: '50px',
         height: '50px'
       }}>
