@@ -4,6 +4,7 @@ import SmileStatus from './SmileStatus';
 
 document.oncontextmenu = () => false;
 
+// TODO decrement left 'mine' display on flag placement
 // TODO componetize controls
 // TODO even more style!
 // TODO look for logic refactors
