@@ -5,10 +5,23 @@
   <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
   <style>
+    body {
+      text-align: center;
+      font-family: "Source Code Pro", monospace;
+      background: linear-gradient(130deg, #174a733b, #77767685, #2a608c52), linear-gradient(80deg, #9990, #4444446b, #4123463b), linear-gradient(40deg, #272f3a, #555, #999);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+    }
+    #app {
+      box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.14);
+    }
     .tile {
       background: #bbb;
-      font-family: "Source Code Pro", monospace;
-      font-size: 22px;
+      font-size: 18px;
     }
     .tile.clicked {
       background: #999;
@@ -30,7 +43,7 @@
       border-right: none !important;
     }
     [class*="number"] {
-      font-size: 26px;
+      font-size: 20px;
     }
     .number-1 {
       color: blue;
@@ -49,13 +62,16 @@
     }
     .fa-flag {
       color: #563939;
+      font-size: 16px;
     }
     .status-bar {
-      width: 500px;
       display: flex;
       justify-content: space-between;
       font-size: 24px;
-      padding: .5rem;
+      margin-bottom: 4px
+    }
+    .status-bar-main > div {
+      min-width: 3rem;
     }
     .tile.clicked.triggered-mine {
       background: #c72e2e;
@@ -72,7 +88,25 @@
     }
     .Minesweeper {
       background: #cacaca;
-      padding-left: 2rem;
+      padding: 10px;
+      display: inline-block;
+      margin: auto;
+    }
+    .tile-grid-block {
+      display: flex;
+      justify-content: center;
+    }
+    .difficulty {
+      margin-top: 12px;
+      margin-bottom: 0;
+      font-size: 16px;
+      justify-content: center;
+    }
+    .difficulty > div {
+      margin: 0 8px;
+      padding: 4px;
+      border: 1px outset #ddd;
+      box-shadow: 0 0 2px rgba(128, 128, 128, 0.4);
     }
   </style>
 </head>

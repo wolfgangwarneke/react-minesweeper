@@ -53,10 +53,6 @@ class Tile extends React.Component {
       this.props.clicked && this.props.number && `number-${this.props.number}`
     ];
     return classes.filter(c => c).join(' ');
-    if (!this.props.clicked){
-      return 'tile unclicked';
-    }
-    return `tile number-${this.props.number}`;
   }
   render() {
     return (
@@ -67,8 +63,8 @@ class Tile extends React.Component {
         boxSizing: 'border-box',
         border: '3px inset',
         borderColor: 'rgb(255, 255, 255) rgb(82, 82, 82) rgb(93, 93, 93) rgb(230, 230, 230)',
-        width: '50px',
-        height: '50px'
+        width: '32px',
+        height: '32px'
       }}>
         {this.getDisplay()}
       </div>

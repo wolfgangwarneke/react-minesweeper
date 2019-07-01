@@ -1,4 +1,3 @@
-// <i class="fas fa-smile"></i>
 import React from "react";
 
 const SmileStatus = ({ status, onClick }) => {
